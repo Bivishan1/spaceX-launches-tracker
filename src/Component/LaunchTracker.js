@@ -1,14 +1,18 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import '../App.css';
 
 export default function LaunchTracker() {
     const [launches, setLaunches] = useState([]);
     const [loading, setLoading] = useState(true);
     const [err, setErr] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);//since we want to start from first page.
+    const launchesperPage = 10;//there will be 10 launches in each page.
     useEffect(() => {
-        fetch(`https://api.spacexdata.com/v4/launches`)
+        const API_KEY = `https://api.spacexdata.com/v4/launches`;
+        fetch(API_KEY)
             .then((res) => {
                 if (!res.ok) {
-                    throw new Error("Data doesn't load properly");
+                    throw new Error("Data not found");
                 }
                 return res.json();
             })
@@ -24,23 +28,45 @@ export default function LaunchTracker() {
             })
 
     }, []);
+
+    //custom variables to track just first & last index of launch in the list of 10 launches in per page.
+    const indexOfLastLunch = launchesperPage * currentPage;
+    const indexOfFirstLunch = indexOfLastLunch - launchesperPage;
+    //arrays to store launches
+    const currentLaunches = launches.slice(indexOfFirstLunch, indexOfLastLunch);
+    //total pages number
+    const totalpages = Math.ceil(launches.length / launchesperPage);
+    // creating an array elements, which has passing object as literals. as whether from string or object.
     return (
         <div>
-            <h1>Launcher Tracker</h1>
+            <h1 className='title'>Launcher Tracker</h1>
             {loading && <p>Loading...</p>}
             {err && <p>Error is:{err}</p>}
 
-            <ul>
-                {launches.map((launch) => {
-                    return <li key={launch.id}>
+            <ul className='launches-list'>
+                {currentLaunches.map((launch) => (
+                    <li key={launch.id} className='launch-item'>
                         <p>Name: <strong>{launch.name}</strong> </p>
                         <p>Rocket : {launch.rocket}</p>
                         <p>Data : {new Date(launch.static_fire_date_utc).toLocaleDateString()}</p>
                         <p>Details: {launch.details ? launch.details : `no details found`}</p>
                         <a href={launch.links.webcast} target='_blank' rel="noopener noreferrer" >Watch Broadcast</a>
                     </li>
-                })}
+                ))}
             </ul>
-        </div>
+            <div className="pagination">
+                {Array.from({ length: totalpages }, (_, index) => index + 1).map((pagenumber) =>
+
+                    <button
+                        key={pagenumber}
+                        onClick={() => setCurrentPage(pagenumber)}
+                        disabled={pagenumber === currentPage}
+                        className={`pagination-button ${pagenumber === currentPage ? `active` : ''}`}
+                    >
+                        {pagenumber}
+                    </button>
+                )}
+            </div>
+        </div >
     )
 }
