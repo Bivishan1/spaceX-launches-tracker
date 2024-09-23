@@ -29,6 +29,15 @@ export default function LaunchTracker() {
 
     }, []);
 
+    // detect changes in current page, so scrolling to the top.
+    useEffect(() => {
+        // Scroll to the top whenever the current page changes
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth',
+        });
+    }, [currentPage]);
+
     //custom variables to track just first & last index of launch in the list of 10 launches in per page.
     const indexOfLastLunch = launchesperPage * currentPage;
     const indexOfFirstLunch = indexOfLastLunch - launchesperPage;
@@ -37,6 +46,19 @@ export default function LaunchTracker() {
     //total pages number
     const totalpages = Math.ceil(launches.length / launchesperPage);
     // creating an array elements, which has passing object as literals. as whether from string or object.
+
+    const handleClick = (pagenumber) => {
+
+        setCurrentPage(pagenumber);
+
+        //scrolling won't work here because while setCurrent() sets pagenumber the component will re-render but we want to scroll to the top after the component render. #LOL,,
+        // window.scrollTo({
+
+        //     top: -10,
+        //     behavior: 'smooth'
+        // });
+
+    }
     return (
         <div>
             <h1 className='title'>Launcher Tracker</h1>
@@ -59,7 +81,7 @@ export default function LaunchTracker() {
 
                     <button
                         key={pagenumber}
-                        onClick={() => setCurrentPage(pagenumber)}
+                        onClick={() => handleClick(pagenumber)}
                         disabled={pagenumber === currentPage}
                         className={`pagination-button ${pagenumber === currentPage ? `active` : ''}`}
                     >
