@@ -62,6 +62,7 @@ export default function LaunchTracker() {
     return (
         <div>
             <h1 className='title'>Launcher Tracker</h1>
+            {/* //lazy loading while data loading */}
             {loading && <p>Loading...</p>}
             {err && <p>Error is:{err}</p>}
 
