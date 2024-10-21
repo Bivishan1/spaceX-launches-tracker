@@ -5,4 +5,4 @@ Where this api helped me to fetch all the required data & information from the f
 # Project Demo
 <!-- ![Project Demo](demo/spacex-launch-trackerDemo.gif)
  -->
-![Project Demo](https://i.imgur.com/DEFz7hu.mp4)
+![Project Demo](https://imgur.com/DEFz7hu)
